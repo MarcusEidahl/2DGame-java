@@ -22,6 +22,7 @@ import marcuseidahl.input.Mouse;
 import marcuseidahl.level.Level;
 import marcuseidahl.level.TileCoordinate;
 
+//this is the class that will be run
 public class Game extends Canvas implements Runnable {
 	
 	//convention
@@ -39,53 +40,62 @@ public class Game extends Canvas implements Runnable {
 	public static int RANDOM_LEVEL_SIZE = 64;
 	
 	//Variable declarations
-	private Thread thread;
-	private JFrame frame;
-	private Keyboard key;
-	private Level level;
-	private Player player;
-	private boolean running = false;
+	private Thread thread;	//Game Thread
+	private JFrame frame;	//Window
+	private Keyboard key;	//For taking keyboard input
+	private Level level;	//holds the level to be updated and rendered
+	private Player player;	//hold the player for this client
+	private Screen screen;	//screen that the graphics will be rendered to
+
+	private boolean running = false;	//true while the game is running
+	
+	//Holds the high scores for the games while the game is running
 	private int survivalHighScore = 0;
 	private int pacmanHighScore = 0;
 	private int dodgeblockHighScore = 0;
-	private Screen screen;
 	
 	//private GameClient socketClient;
 	//private GameServer socketServer;
 	
+	//Holds what state the game is in
 	public enum GameState {
 		START_MENU, PACMAN, SURVIVAL, DODGEBLOCK
 	}
 	public GameState gameState;
+	
+	//Default player spawn point
 	TileCoordinate playerSpawn = new TileCoordinate(width / 32, height / 32);
 
-	
+	//Init the image to be rendered
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int [] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 	
-	
+	//Creates a game 
 	public Game() {
-		 Dimension size = new Dimension(width*scale, height*scale);
-		 setPreferredSize(size);
-		 screen = new Screen(width, height);
-		 frame = new JFrame();
-		 key = new Keyboard();
-		 level = Level.menuStart;
-		 gameState = GameState.START_MENU;
-		 player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
-		 level.add(player);
-		 
-		 addKeyListener(key);
-		 
-		 Mouse mouse = new Mouse();
-		 addMouseListener(mouse);
-		 addMouseMotionListener(mouse);
-		 
+		
+		//Init the frame, screen, input, and initial game settings
+		Dimension size = new Dimension(width*scale, height*scale);
+		setPreferredSize(size);
+		screen = new Screen(width, height);
+		frame = new JFrame();
+		key = new Keyboard();
+		level = Level.menuStart;
+		gameState = GameState.START_MENU;
+		player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
+		level.add(player);
+		
+		addKeyListener(key);
+		
+		Mouse mouse = new Mouse();
+		addMouseListener(mouse);
+		addMouseMotionListener(mouse);
+		
 	}
 	
+	//Starts the main game loop thread
 	public synchronized void start() {
 		running = true;
-		thread = new Thread(this, "Display");
+		thread = new Thread(this, "Main Game Loop");
 		thread.start();
 		
 		/* Testing basic network code
@@ -100,6 +110,7 @@ public class Game extends Canvas implements Runnable {
 		*/
 	}
 	
+	//Closes the current Game thread
 	public synchronized void stop() {
 		running = false;
 		try{
@@ -109,29 +120,36 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	
+	/*What the Game thread does 
+	 * NOTE: CURRENTLY ONLY WORKS CONSISTENTLY IF UPDATES STAYS AT 60 PER SECOND BECAUSE MOVEMENT ASSUMES 60 UPDATES PER SECOND
+	 * TODO: CALCULATE A DELTA AND REWORK ALL THE MOVEMENT TO MOVE AS A FACTOR OF DELTA
+	 */ 
 	public void run() {
 		long lastTime = System.nanoTime();
-		long timer = System.currentTimeMillis();
-		final double ns = 1000000000.0 / 60.0;
-		double delta = 0;
-		int frames = 0;
-		int updates = 0;
-		requestFocus(); //effectively clicks the window on start
+		//long timer = System.currentTimeMillis();
+		long timer = 0;		//counts until the next second
+		final double nsTickTime = 1000000000.0 / 60.0;	// 1/60th of a second in nanoseconds
+		double delta = 0;	//Time between loop iterations in nanoseconds
+		double tickPercent = 0; // Percentage of the time before next update
+		int frames = 0;		// how many frames were rendered in the last second
+		int updates = 0;	// how many updates there were in the last second
+		requestFocus();		// effectively clicks the window on start
 		while (running) {
 			long now = System.nanoTime();
-			delta += (now - lastTime) / ns;
+			delta = now - lastTime;
+			timer += delta;
+			tickPercent += (now - lastTime) / nsTickTime; 
 			lastTime = now;
-			while (delta >= 1) {
+			while (tickPercent >= 1) {
 				update();
 				updates++;
-				delta--;
+				tickPercent--;
 			}
 			render();
 			frames++;
 			
-			if(System.currentTimeMillis() - timer > 1000){
-				timer += 1000;
-				//System.out.println(updates + "ups," + frames + " fps");
+			if(timer >= 1000000000) {
+				timer = 0;
 				frame.setTitle(title + "   |   " + updates + " ups, " + frames + " fps");
 				updates = 0;
 				frames = 0;
@@ -240,17 +258,25 @@ public class Game extends Canvas implements Runnable {
 		
 	}
 	
+	
 	public void render() {
+		
+		//Set triple buffering if not already set
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null) {
 			//triple buffering
 			createBufferStrategy(3);
 			return;
 		}
+		
+		//Clears the previous render
 		screen.clear();
+		
+		//Set the player as the center of the screen
 		int xScroll = (int) player.getX() - screen.width / 2;
 		int yScroll = (int) player.getY() - screen.height / 2;
-
+		
+		//Render the level with the player in the center
 		level.render(xScroll, yScroll, screen);
 				
 		for(int i = 0; i < pixels.length; i++) {
@@ -261,7 +287,6 @@ public class Game extends Canvas implements Runnable {
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		
 		//Level Specific Overlays
-		
 		if(gameState == GameState.START_MENU) {
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("Verdana", 0, 50));
@@ -304,9 +329,11 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public static void main(String[] args){
+	
+		//Creates a Game
 		Game game = new Game();
 		
-		//setting up the frame
+		//init the frame that the graphics will be drawn to
 		game.frame.setResizable(false);
 		game.frame.setTitle(title);
 		game.frame.add(game);
@@ -315,6 +342,7 @@ public class Game extends Canvas implements Runnable {
 		game.frame.setLocationRelativeTo(null);
 		game.frame.setVisible(true);
 		
+		//Runs the game until it exits
 		game.start();
 		
 	}
