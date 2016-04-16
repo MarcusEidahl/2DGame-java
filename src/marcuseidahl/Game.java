@@ -123,6 +123,7 @@ public class Game extends Canvas implements Runnable {
 	/*What the Game thread does 
 	 * NOTE: CURRENTLY ONLY WORKS CONSISTENTLY IF UPDATES STAYS AT 60 PER SECOND BECAUSE MOVEMENT ASSUMES 60 UPDATES PER SECOND
 	 * TODO: CALCULATE A DELTA AND REWORK ALL THE MOVEMENT TO MOVE AS A FACTOR OF DELTA
+	 * TODO: ADD A FRAMERATE CAP
 	 */ 
 	public void run() {
 		long lastTime = System.nanoTime();
@@ -148,6 +149,7 @@ public class Game extends Canvas implements Runnable {
 			render();
 			frames++;
 			
+			//Every second update the frames per second and updates per second
 			if(timer >= 1000000000) {
 				timer = 0;
 				frame.setTitle(title + "   |   " + updates + " ups, " + frames + " fps");
@@ -159,13 +161,16 @@ public class Game extends Canvas implements Runnable {
 		stop();
 	}
 	
-
+	//Update the logic for everything in the game
 	public void update() {
 		key.update();
 		level.update();
 		
 		//Game State Updates
 		
+		/* START MENU
+		 * This screen is where the player detirmines which game to play and it displays the high scores for each game 
+		 */
 		if(gameState == GameState.START_MENU) {
 			if(Mouse.mouseB() == 1 && Mouse.getX() >= 0 * scale  && Mouse.getX() <= 15 * scale && Mouse.getY() >= 0 * scale && Mouse.getY() <= 15 * scale) {
 				level = Level.friendTestLevel1;
@@ -196,6 +201,8 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 		
+		
+		// PACMAN GAME
 		if(gameState == GameState.PACMAN) {
 			if(key.p) {
 				level.reset();
@@ -213,6 +220,7 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 		
+		//SURVIVAL GAME
 		if(gameState == GameState.SURVIVAL) {
 			if(key.p) {
 				level.reset();
@@ -258,7 +266,7 @@ public class Game extends Canvas implements Runnable {
 		
 	}
 	
-	
+	//Draw all the objects to the screen
 	public void render() {
 		
 		//Set triple buffering if not already set
@@ -286,7 +294,9 @@ public class Game extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		
-		//Level Specific Overlays
+		/*Level Specific Overlays
+		 * TODO: CUSTOM TEXT INSTEAD OF JAVA GRAPHICS
+		 */
 		if(gameState == GameState.START_MENU) {
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("Verdana", 0, 50));
