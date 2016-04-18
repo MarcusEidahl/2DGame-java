@@ -11,6 +11,7 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import marcuseidahl.entity.mob.player.ChessPlayer;
 import marcuseidahl.entity.mob.player.DinosaurPlayer;
 import marcuseidahl.entity.mob.player.MarioPlayer;
 import marcuseidahl.entity.mob.player.NullPlayer;
@@ -32,9 +33,9 @@ public class Game extends Canvas implements Runnable {
 	public static String title = "2D Game Engine";
 	
 	//Resolution with 16:9 aspect ratio
-	public static int width = 400;
-	public static int height = width / 16 * 9; //168 @ 300 and 279 @ 500
-	public static int scale = 3;
+	public final static int width = 400;
+	public final static int height = width / 16 * 9; //168 @ 300 and 279 @ 500
+	public final static int scale = 3;
 	
 	//Size of a randomly generated level
 	public static int RANDOM_LEVEL_SIZE = 64;
@@ -59,7 +60,7 @@ public class Game extends Canvas implements Runnable {
 	
 	//Holds what state the game is in
 	public enum GameState {
-		START_MENU, PACMAN, SURVIVAL, DODGEBLOCK
+		START_MENU, PACMAN, SURVIVAL, DODGEBLOCK, CHESS
 	}
 	public GameState gameState;
 	
@@ -80,6 +81,7 @@ public class Game extends Canvas implements Runnable {
 		frame = new JFrame();
 		key = new Keyboard();
 		level = Level.menuStart;
+		level.reset();
 		gameState = GameState.START_MENU;
 		player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
 		level.add(player);
@@ -166,6 +168,8 @@ public class Game extends Canvas implements Runnable {
 		key.update();
 		level.update();
 		
+		System.out.println("X: " + Mouse.getX() + "\nY: " + Mouse.getY() + "\n");
+		
 		//Game State Updates
 		
 		/* START MENU
@@ -198,6 +202,15 @@ public class Game extends Canvas implements Runnable {
 				player = new DinosaurPlayer(playerSpawn.getX(), playerSpawn.getY() , key);
 				level.add(player);
 				gameState = GameState.DODGEBLOCK;
+			}
+			if(Mouse.mouseB() == 1 && Mouse.getX() >= 48 * scale  && Mouse.getX() <= 63 * scale && Mouse.getY() >= 0 * scale && Mouse.getY() <= 15 * scale) {
+				level = Level.chessLevel;
+				level.reset();
+				playerSpawn.setX(5);
+				playerSpawn.setY(5);
+				player = new ChessPlayer(playerSpawn.getX(), playerSpawn.getY(), key, true);
+				level.add(player);
+				gameState = GameState.CHESS;
 			}
 		}
 		
@@ -238,6 +251,7 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 		
+		//DODGEBLOCK GAME
 		if(gameState == GameState.DODGEBLOCK) {
 			if(key.p) {
 				level.reset();
@@ -252,6 +266,24 @@ public class Game extends Canvas implements Runnable {
 				player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
 				level.add(player);
 				gameState = GameState.START_MENU;
+			}
+			if(Mouse.mouseB() == 1 && Mouse.getX() > (width - 16) * scale && Mouse.getY() > (height - 16) * scale) {
+				level = Level.menuStart;
+				level.reset();
+				playerSpawn.setX(width/32);
+				playerSpawn.setY(height/32);
+				player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
+				level.add(player);
+				gameState = GameState.START_MENU;
+			}
+		}
+		
+		//CHESS
+		if(gameState == GameState.CHESS) {
+			if(key.p) {
+				level.reset();
+				player = new ChessPlayer(playerSpawn.getX(), playerSpawn.getY(), key, true);
+				level.add(player);
 			}
 			if(Mouse.mouseB() == 1 && Mouse.getX() > (width - 16) * scale && Mouse.getY() > (height - 16) * scale) {
 				level = Level.menuStart;

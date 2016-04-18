@@ -49,6 +49,7 @@ public abstract class Level {
 	public static Level andrewPracticeLevel1 = new AndrewPracticeLevel1("/levels/AndrewPractice1.png");
 	public static Level pacmanLevel = new PacmanLevel("/levels/PacmanLevel.png");
 	public static Level dinosaurLevel = new DodgeblockLevel("/levels/DinosaurLevel.png");
+	public static Level chessLevel = new ChessLevel("/levels/chessBoard.png");
 	
 	public static Level menuStart = new StartMenu("/levels/menu_Start.png");
 	
@@ -80,8 +81,6 @@ public abstract class Level {
 			System.out.println("Exception! Could not load level file!");
 		}
 		
-		spawnInitialMobs();
-
 	}
 	
 	protected void spawnInitialMobs() {
@@ -190,6 +189,9 @@ public abstract class Level {
 		if(tiles[x + y * width] == Tile.color_sand) return Tile.sand;
 		if(tiles[x + y * width] == Tile.color_mountain) return Tile.mountain;
 		if(tiles[x + y * width] == Tile.color_lava) return Tile.lava;
+		if(tiles[x + y * width] == Tile.color_black) return Tile.chessBlack;
+		if(tiles[x + y * width] == Tile.color_white) return Tile.chessWhite;
+
 		return Tile.voidTile;
 	}
 	

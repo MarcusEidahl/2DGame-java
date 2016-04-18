@@ -22,7 +22,24 @@ public class Sprite {
 	public static Sprite dinosaurBlockGreen = new Sprite(16, 8, 0, Spritesheet.tiles);
 	public static Sprite dinosaurBlockRed = new Sprite(16, 9, 0, Spritesheet.tiles);
 	public static Sprite dinosaurBlockPurple = new Sprite(16, 10, 0, Spritesheet.tiles);
+	public static Sprite chessLight = new Sprite(16, 11, 0, Spritesheet.tiles);
+	public static Sprite chessDark = new Sprite(16, 12, 0, Spritesheet.tiles);
+
+	//Chess Sprites
+	public static Sprite chessRookWhite = new Sprite(16, 0, 9, Spritesheet.tiles);
+	public static Sprite chessKnightWhite = new Sprite(16, 1, 9, Spritesheet.tiles);
+	public static Sprite chessBishopWhite = new Sprite(16, 2, 9, Spritesheet.tiles);
+	public static Sprite chessKingWhite = new Sprite(16, 3, 9, Spritesheet.tiles);
+	public static Sprite chessQueenWhite = new Sprite(16, 4, 9, Spritesheet.tiles);
+	public static Sprite chessPawnWhite = new Sprite(16, 5, 9, Spritesheet.tiles);
 	
+	public static Sprite chessRookBlack = new Sprite(16, 0, 8, Spritesheet.tiles);
+	public static Sprite chessKnightBlack = new Sprite(16, 1, 8, Spritesheet.tiles);
+	public static Sprite chessBishopBlack = new Sprite(16, 2, 8, Spritesheet.tiles);
+	public static Sprite chessKingBlack = new Sprite(16, 3, 8, Spritesheet.tiles);
+	public static Sprite chessQueenBlack = new Sprite(16, 4, 8, Spritesheet.tiles);
+	public static Sprite chessPawnBlack = new Sprite(16, 5, 8, Spritesheet.tiles);
+
 
 	//Player Sprites	
 	public static Sprite playerMario_still = new Sprite(16, 0, 15, Spritesheet.tiles);
