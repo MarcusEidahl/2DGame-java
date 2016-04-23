@@ -21,7 +21,7 @@ public abstract class Mob extends Entity{
 		UP, DOWN, LEFT, RIGHT
 	}
 	public Direction dir;
-		
+	
 	public void move(double xa, double ya) {
 
 		if(xa != 0 && ya != 0) {

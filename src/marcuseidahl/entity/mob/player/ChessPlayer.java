@@ -22,6 +22,10 @@ public class ChessPlayer extends Player{
 		
 	}
 	
+	public void update() {
+		
+	}
+	
 	public void updateMovement() {
 		
 	}

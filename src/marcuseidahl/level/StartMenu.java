@@ -46,7 +46,7 @@ public class StartMenu extends Level{
 		add(new UIElement(0, 0, Sprite.playerMario_still));
 		add(new UIElement(16, 0, Sprite.playerPacman_right));
 		add(new UIElement(32, 0, Sprite.playerDinosaur));
-		add(new UIElement(48, 0, Sprite.playerDinosaur));
+		add(new UIElement(48, 0, Sprite.chessPawnWhite));
 		
 	}
 	

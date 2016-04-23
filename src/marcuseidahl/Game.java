@@ -167,13 +167,11 @@ public class Game extends Canvas implements Runnable {
 	public void update() {
 		key.update();
 		level.update();
-		
-		System.out.println("X: " + Mouse.getX() + "\nY: " + Mouse.getY() + "\n");
-		
+				
 		//Game State Updates
 		
 		/* START MENU
-		 * This screen is where the player detirmines which game to play and it displays the high scores for each game 
+		 * This screen is where the player determines which game to play and it displays the high scores for each game 
 		 */
 		if(gameState == GameState.START_MENU) {
 			if(Mouse.mouseB() == 1 && Mouse.getX() >= 0 * scale  && Mouse.getX() <= 15 * scale && Mouse.getY() >= 0 * scale && Mouse.getY() <= 15 * scale) {
@@ -267,15 +265,6 @@ public class Game extends Canvas implements Runnable {
 				level.add(player);
 				gameState = GameState.START_MENU;
 			}
-			if(Mouse.mouseB() == 1 && Mouse.getX() > (width - 16) * scale && Mouse.getY() > (height - 16) * scale) {
-				level = Level.menuStart;
-				level.reset();
-				playerSpawn.setX(width/32);
-				playerSpawn.setY(height/32);
-				player = new NullPlayer(playerSpawn.getX() + 32, playerSpawn.getY() + 32);
-				level.add(player);
-				gameState = GameState.START_MENU;
-			}
 		}
 		
 		//CHESS
@@ -295,7 +284,6 @@ public class Game extends Canvas implements Runnable {
 				gameState = GameState.START_MENU;
 			}
 		}
-		
 	}
 	
 	//Draw all the objects to the screen

@@ -12,7 +12,6 @@ public class PacmanGhost extends Mob{
 	public PacmanGhost(int x, int y, String color) {
 		this.x = x * 16;
 		this.y = y * 16;
-		
 		meleeDamage = 100;
 		health = 100;
 		speed = 1;

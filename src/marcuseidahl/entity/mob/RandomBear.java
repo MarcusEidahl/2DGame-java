@@ -11,7 +11,6 @@ public class RandomBear extends Mob{
 	public RandomBear(int x, int y) {
 		this.x = x * 16;
 		this.y = y * 16;
-		
 		meleeDamage = 100;
 		speed = .5;
 		health = 100;

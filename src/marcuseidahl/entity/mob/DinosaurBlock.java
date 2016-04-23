@@ -8,7 +8,6 @@ public class DinosaurBlock extends Mob{
 	public DinosaurBlock(int x, int y, String color) {
 		this.x = x * 16;
 		this.y = y * 16;
-		
 		meleeDamage = 100;
 		health = 100;
 		speed = 3.5;

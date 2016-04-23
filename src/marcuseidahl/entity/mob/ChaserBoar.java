@@ -13,7 +13,6 @@ public class ChaserBoar extends Mob{
 	public ChaserBoar(int x, int y) {
 		this.x = x * 16;
 		this.y = y * 16;
-		
 		meleeDamage = 100;
 		speed = .8;
 		health = 100;

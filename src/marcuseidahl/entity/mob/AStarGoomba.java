@@ -15,8 +15,7 @@ public class AStarGoomba extends Mob{
 	
 	public AStarGoomba(int x, int y) {
 		this.x = x * 16;
-		this.y = y * 16;
-		
+		this.y = y * 16;		
 		meleeDamage = 100;
 		speed = .25;
 		health = 100;
